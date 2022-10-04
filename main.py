@@ -4,7 +4,7 @@ import tensorflow as tf
 #tf.debugging.set_log_device_placement(True)
 print(tf.__version__)
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 import os
 
 datasets, info = tfds.load(name='mnist', with_info=True, as_supervised=True)
