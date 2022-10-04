@@ -47,3 +47,35 @@ with strategy.scope():
                 optimizer=tf.keras.optimizers.Adam(),
                 metrics=['accuracy'])
 
+# Define the checkpoint directory to store the checkpoints.
+checkpoint_dir = './training_checkpoints'
+# Define the name of the checkpoint files.
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+
+# Define a function for decaying the learning rate.
+# You can define any decay function you need.
+def decay(epoch):
+  if epoch < 3:
+    return 1e-3
+  elif epoch >= 3 and epoch < 7:
+    return 1e-4
+  else:
+    return 1e-5
+
+# Define a callback for printing the learning rate at the end of each epoch.
+class PrintLR(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs=None):
+    print('\nLearning rate for epoch {} is {}'.format(        epoch + 1, model.optimizer.lr.numpy()))
+
+# Put all the callbacks together.
+callbacks = [
+    tf.keras.callbacks.TensorBoard(log_dir='./logs'),
+    tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
+                                       save_weights_only=True),
+    tf.keras.callbacks.LearningRateScheduler(decay),
+    PrintLR()
+]
+
+EPOCHS = 12
+
+model.fit(train_dataset, epochs=EPOCHS, callbacks=callbacks)
