@@ -1,10 +1,11 @@
 import tensorflow_datasets as tfds
 import tensorflow as tf
 
-import os
-
+tf.debugging.set_log_device_placement(True)
 print(tf.__version__)
-tf.config.list_physical_devices('GPU')
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
+import os
 
 datasets, info = tfds.load(name='mnist', with_info=True, as_supervised=True)
 
